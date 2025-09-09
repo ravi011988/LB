@@ -5,6 +5,7 @@ module "rg" {
     location = "Central India"
 }
 
+
 module "vnet" {
   source = "../module/azurerm_vnet"
   depends_on = [ module.rg ]
