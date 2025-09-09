@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build:
-    name: 'Terraform'
+    name: 'Terraform-init-plan'
     runs-on: self-hosted
     steps:
     - name: Checkout
@@ -23,25 +23,24 @@ jobs:
     - name: Azure Login
       uses: Azure/login@v2.3.0
       with:
-        client-id: ass
-        tenant-id: sdfd
-        subscription-id: sdf
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
        
-
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
 
-    # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -check
 
-    # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
 
-      # On push to "main", build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false
+  deploy:
+    name: terraform_apply
+    runs-on: self-hosted
+    needs: build
+    if: github.ref == 'refs/heads/"main"'
+    steps:
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
