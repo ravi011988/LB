@@ -1,0 +1,9 @@
+variable "subnet_name" {}
+variable "virtual_network_name" {}
+variable "resource_group_name" {}
+variable "azurerm_network_interface" {}
+variable "location" {}
+variable "azurerm_linux_virtual_machine" {}
+variable "size" {}
+variable "user_name" {}
+variable "admin_password" {}
